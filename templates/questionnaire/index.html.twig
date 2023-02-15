@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+
+<title>Questionnaire index</title>
+
+{% block body %}
+    <h1>Questionnaire index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Questionnaireid</th>
+                <th>Questionnairename</th>
+                <th>Questionnairedescription</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for questionnaire in questionnaires %}
+            <tr>
+                <td>{{ questionnaire.questionnaireid }}</td>
+                <td>{{ questionnaire.questionnairename }}</td>
+                <td>{{ questionnaire.questionnairedescription }}</td>
+                <td>
+                    <a href="{{ path('app_questionnaire_show', {'questionnaireid': questionnaire.questionnaireid}) }}">show</a>
+                    <a href="{{ path('app_questionnaire_edit', {'questionnaireid': questionnaire.questionnaireid}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_questionnaire_new') }}">Create new</a>
+{% endblock %}
