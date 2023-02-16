@@ -1,30 +1,24 @@
-<!DOCTYPE html>
-
-<title>Questionnaire</title>
-
+{% extends 'layouts/base-entite.html.twig' %}
+ 
+{% block title %}Questionnaire{% endblock %}
+ 
 {% block body %}
-    <h1>Questionnaire</h1>
-
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Questionnaireid</th>
-                <td>{{ questionnaire.questionnaireid }}</td>
-            </tr>
-            <tr>
-                <th>Questionnairename</th>
-                <td>{{ questionnaire.questionnairename }}</td>
-            </tr>
-            <tr>
-                <th>Questionnairedescription</th>
-                <td>{{ questionnaire.questionnairedescription }}</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_questionnaire_index') }}">back to list</a>
-
-    <a href="{{ path('app_questionnaire_edit', {'questionnaireid': questionnaire.questionnaireid}) }}">edit</a>
-
-    {{ include('questionnaire/_delete_form.html.twig') }}
+    <div class="container">
+        <h2 class="text-center mt-5 mb-3">Show Questionnaire</h2>
+        <div class="card">
+            <div class="card-header">
+                <a class="btn btn-outline-info float-right" href="{{ path('app_questionnaire_index') }}"> 
+                    View All Questionnaire
+                </a>
+            </div>
+            <div class="card-body">
+                <b class="text-muted">Questionnaireid:</b>
+                <p>{{ questionnaire.questionnaireid }}</p>
+                <b class="text-muted">Questionnairename:</b>
+                <p>{{ questionnaire.questionnairename }}</p>
+                <b class="text-muted">Questionnairedescription:</b>
+                <p>{{ questionnaire.questionnairedescription }}</p>
+            </div>
+        </div>
+    </div>
 {% endblock %}

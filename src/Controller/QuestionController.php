@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Question;
+use App\Entity\Questionnaire;
 use App\Form\QuestionType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -25,18 +26,27 @@ class QuestionController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_question_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('/new{questionnaire_id}', name: 'app_question_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, EntityManagerInterface $entityManager, $questionnaire_id): Response
     {
+        $questionnaire = $entityManager->getRepository(Questionnaire::class)->find(2);
+        if (!$questionnaire) {
+          throw $this->createNotFoundException('No questionnaire found for id '.$questionnaire_id);
+        }
+
         $question = new Question();
-        $form = $this->createForm(QuestionType::class, $question);
+        $question->setQuestionnaireid($questionnaire);
+        $form = $this->createForm(QuestionType::class, $question, [
+            'questionnaire_id' => $questionnaire_id, // On passe l'ID du questionnaire en option
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($question);
             $entityManager->flush();
+            return $this->redirectToRoute('show_questionnaire', ['id' => $questionnaire_id]);
 
-            return $this->redirectToRoute('app_question_index', [], Response::HTTP_SEE_OTHER);
+            //return $this->redirectToRoute('app_question_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('question/new.html.twig', [

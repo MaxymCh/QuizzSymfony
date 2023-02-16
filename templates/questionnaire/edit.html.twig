@@ -1,13 +1,26 @@
-<!DOCTYPE html>
-
-<title>Edit Questionnaire</title>
-
+{% extends 'layouts/base-entite.html.twig' %}
+{% block title %}Edit Questionnaire{% endblock %}
 {% block body %}
     <h1>Edit Questionnaire</h1>
-
-    {{ include('questionnaire/_form.html.twig', {'button_label': 'Update'}) }}
-
-    <a href="{{ path('app_questionnaire_index') }}">back to list</a>
-
-    {{ include('questionnaire/_delete_form.html.twig') }}
+    <div class="container">
+        <h2 class="text-center mt-5 mb-3">Edit Questionnaire</h2>
+        <div class="card">
+            <div class="card-header">
+                <a class="btn btn-outline-info float-right" href="{{ path('app_questionnaire_index') }}"> 
+                    View All Questionnaires
+                </a>
+            </div>
+            <div class="card-body">
+                {% include 'questionnaire/_form.html.twig' with {'button_label': 'Update Questionnaire', 'button_color': 'btn-outline-success'}  %}
+            </div>
+            <div class="card-body">
+                <a class="btn btn-outline-primary" href="{{ path('app_question_new', {'questionnaire_id': questionnaire.questionnaireid}) }}"> 
+                    Add Question 
+                </a>
+            </div>
+            <div class="card-body">
+                {% include 'questionnaire/_delete_form.html.twig' with {'button_label': 'Delete Questionnaire', 'button_color': 'btn-outline-success'}  %}
+            </div>
+        </div>
+    </div>
 {% endblock %}

@@ -1,11 +1,19 @@
-<!DOCTYPE html>
-
-<title>New Questionnaire</title>
-
+{% extends 'layouts/base-entite.html.twig' %}
+ 
+{% block title %}New Questionnaire{% endblock %}
+ 
 {% block body %}
-    <h1>Create new Questionnaire</h1>
-
-    {{ include('questionnaire/_form.html.twig') }}
-
-    <a href="{{ path('app_questionnaire_index') }}">back to list</a>
+    <div class="container">
+        <h2 class="text-center mt-5 mb-3">Create Questionnaire</h2>
+        <div class="card">
+            <div class="card-header">
+                <a class="btn btn-outline-info float-right" href="{{ path('app_questionnaire_index') }}"> 
+                    View All Questionnaire
+                </a>
+            </div>
+            <div class="card-body">
+                 {{ include('questionnaire/_form.html.twig') }}
+            </div>
+        </div>
+    </div>
 {% endblock %}

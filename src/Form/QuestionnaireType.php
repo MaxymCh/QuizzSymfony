@@ -14,7 +14,6 @@ class QuestionnaireType extends AbstractType
         $builder
             ->add('questionnairename')
             ->add('questionnairedescription')
-            ->add('questionid')
         ;
     }
 

@@ -6,6 +6,8 @@ use App\Entity\Question;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+
 
 class QuestionType extends AbstractType
 {
@@ -15,7 +17,10 @@ class QuestionType extends AbstractType
             ->add('questiontext')
             ->add('questiontype')
             ->add('questionorder')
-            ->add('questionnaireid')
+            ->add('questionnaire_id', HiddenType::class, [
+                'data' => $options['questionnaire_id'], // Pré-remplit le champ avec l'ID du questionnaire transmis en option
+            ])
+            //->add('questionnaireid')
         ;
     }
 
@@ -23,6 +28,7 @@ class QuestionType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Question::class,
+            'questionnaire_id' => null, // Définit la valeur par défaut de l'option questionnaire_id à null
         ]);
     }
 }
