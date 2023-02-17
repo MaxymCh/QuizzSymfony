@@ -5,11 +5,6 @@
     <div class="form-group">
         {{ form_row(form.questiontype, {'attr': {'class': 'form-control'}}) }}
     </div>
-    <div class="form-group">
-        {{ form_row(form.questionorder, {'attr': {'class': 'form-control'}}) }}
-    </div>
-    
 
-    
     <button class="btn {{ button_color|default('btn-outline-primary') }}  mt-3">{{ button_label|default('Save Question') }}</button>
 {{ form_end(form) }}

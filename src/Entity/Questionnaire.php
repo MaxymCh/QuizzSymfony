@@ -2,7 +2,9 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Questionnaire
@@ -95,4 +97,56 @@ class Questionnaire
     {
         return "Questionnaire ID : ".strval($this->questionnaireid)." ".$this->questionnairename;
     }
+
+    
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Question", mappedBy="questionnaireid", cascade={"persist", "remove"})
+     */
+    private $questions;
+
+    public function __construct()
+    {
+        $this->questions = new ArrayCollection();
+    }
+
+    /**
+     * @return Collection|Question[]
+     */
+    public function getQuestions(): Collection
+    {
+        return $this->questions;
+    }
+
+    public function addQuestion(Question $question): self
+    {
+        if (!$this->questions->contains($question)) {
+            $this->questions[] = $question;
+            $question->setQuestionnaireid($this);
+        }
+
+        return $this;
+    }
+
+    public function removeQuestion(Question $question): self
+    {
+        if ($this->questions->removeElement($question)) {
+            // set the owning side to null (unless already changed)
+            if ($question->getQuestionnaireid() === $this) {
+                $question->setQuestionnaireid(null);
+            }
+        }
+
+        return $this;
+    }
+
+	public function getMaxQuestionOrder() {
+		$maxQuestionOrder = null;
+		foreach($this->questions as $question) {
+			if($maxQuestionOrder === null || $question->getQuestionorder() > $maxQuestionOrder) {
+				$maxQuestionOrder = $question->getQuestionorder();
+			}
+		}
+		return $maxQuestionOrder;
+	}
+	
 }

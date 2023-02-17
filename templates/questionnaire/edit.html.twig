@@ -14,7 +14,7 @@
                 {% include 'questionnaire/_form.html.twig' with {'button_label': 'Update Questionnaire', 'button_color': 'btn-outline-success'}  %}
             </div>
             <div class="card-body">
-                <a class="btn btn-outline-primary" href="{{ path('app_question_new', {'questionnaire_id': questionnaire.questionnaireid}) }}"> 
+                <a class="btn btn-outline-primary" href="{{ path('app_question_new', {'questionnaireid': questionnaire.questionnaireid}) }}"> 
                     Add Question 
                 </a>
             </div>

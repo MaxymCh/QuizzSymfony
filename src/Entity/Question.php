@@ -2,8 +2,10 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use App\Questionnaire;
+use App\Entity\Questionnaire;
 
 /**
  * Question
@@ -44,9 +46,9 @@ class Question
     private $questionorder;
 
     /**
-     * @var \Questionnaire
+     * @var \App\Entity\Questionnaire
      *
-     * @ORM\ManyToOne(targetEntity="Questionnaire")
+     * @ORM\ManyToOne(targetEntity="Questionnaire", inversedBy="questions")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="questionnaireID", referencedColumnName="questionnaireID")
      * })
@@ -129,7 +131,7 @@ class Question
 	
 	/**
 	 * 
-	 * @return \Questionnaire
+	 * @return \App\Entity\Questionnaire
 	 */
 	public function getQuestionnaireid() {
 		return $this->questionnaireid;
@@ -137,7 +139,7 @@ class Question
 	
 	/**
 	 * 
-	 * @param \Questionnaire $questionnaireid 
+	 * @param \App\Entity\Questionnaire|null $questionnaireid 
 	 * @return self
 	 */
 	public function setQuestionnaireid($questionnaireid): self {
@@ -148,5 +150,45 @@ class Question
     public function __toString()
     {
         return "Question ID : ".strval($this->questionid)." ".$this->questiontext;
+    }
+
+	    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Reponse", mappedBy="questionid", cascade={"persist", "remove"})
+     */
+    private $reponses;
+
+    public function __construct()
+    {
+        $this->reponses = new ArrayCollection();
+    }
+
+    /**
+     * @return Collection|Question[]
+     */
+    public function getReponses(): Collection
+    {
+        return $this->reponses;
+    }
+
+    public function addReponse(Reponse $reponse): self
+    {
+        if (!$this->reponses->contains($reponse)) {
+            $this->reponses[] = $reponse;
+            $reponse->setQuestionid($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReponse(Reponse $reponse): self
+    {
+        if ($this->reponses->removeElement($reponse)) {
+            // set the owning side to null (unless already changed)
+            if ($reponse->getQuestionid() === $this) {
+                $reponse->setQuestionid(null);
+            }
+        }
+
+        return $this;
     }
 }

@@ -36,7 +36,7 @@ class Resultat
     private $score;
 
     /**
-     * @var \User
+     * @var \App\Entity\User
      *
      * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumns({
@@ -46,7 +46,7 @@ class Resultat
     private $userid;
 
     /**
-     * @var \Questionnaire
+     * @var \App\Entity\Questionnaire
      *
      * @ORM\ManyToOne(targetEntity="Questionnaire")
      * @ORM\JoinColumns({

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Reponse;
+use App\Entity\Question;
 use App\Form\ReponseType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -25,10 +26,16 @@ class ReponseController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_reponse_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('/new{questionid}', name: 'app_reponse_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, EntityManagerInterface $entityManager, $questionid): Response
     {
+        $questionid = intval($questionid);
+        $question = $entityManager->getRepository(Question::class)->find($questionid);
+        if (!$question) {
+          throw $this->createNotFoundException('No question found for id '.$questionid);
+        }
         $reponse = new Reponse();
+        $reponse->setQuestionid($question);
         $form = $this->createForm(ReponseType::class, $reponse);
         $form->handleRequest($request);
 
@@ -36,7 +43,13 @@ class ReponseController extends AbstractController
             $entityManager->persist($reponse);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_reponse_index', [], Response::HTTP_SEE_OTHER);
+            // Ajouter la question au questionnaire
+            $question->addReponse($reponse);
+            $entityManager->persist($question);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_question_edit', ['questionid' => $question->getQuestionid()]);
+            //return $this->redirectToRoute('app_reponse_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('reponse/new.html.twig', [

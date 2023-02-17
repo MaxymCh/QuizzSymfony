@@ -14,7 +14,6 @@ class ReponseType extends AbstractType
         $builder
             ->add('reponsetext')
             ->add('correct')
-            ->add('questionid')
         ;
     }
 

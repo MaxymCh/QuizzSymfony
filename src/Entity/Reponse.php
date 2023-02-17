@@ -36,9 +36,9 @@ class Reponse
     private $correct;
 
     /**
-     * @var \Question
+     * @var \App\Entity\Question
      *
-     * @ORM\ManyToOne(targetEntity="Question")
+     * @ORM\ManyToOne(targetEntity="Question", inversedBy="reponses")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="questionID", referencedColumnName="questionID")
      * })
@@ -103,7 +103,7 @@ class Reponse
 	
 	/**
 	 * 
-	 * @return \Question
+	 * @return \App\Entity\Question
 	 */
 	public function getQuestionid() {
 		return $this->questionid;
@@ -111,7 +111,7 @@ class Reponse
 	
 	/**
 	 * 
-	 * @param \Question $questionid 
+	 * @param \App\Entity\Question|null $questionid 
 	 * @return self
 	 */
 	public function setQuestionid($questionid): self {

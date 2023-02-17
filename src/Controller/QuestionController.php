@@ -26,26 +26,39 @@ class QuestionController extends AbstractController
         ]);
     }
 
-    #[Route('/new{questionnaire_id}', name: 'app_question_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, $questionnaire_id): Response
+    #[Route('/new{questionnaireid}', name: 'app_question_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, EntityManagerInterface $entityManager, $questionnaireid): Response
     {
-        $questionnaire = $entityManager->getRepository(Questionnaire::class)->find(2);
+        $questionnaireid = intval($questionnaireid);
+        $questionnaire = $entityManager->getRepository(Questionnaire::class)->find($questionnaireid);
         if (!$questionnaire) {
-          throw $this->createNotFoundException('No questionnaire found for id '.$questionnaire_id);
+          throw $this->createNotFoundException('No questionnaire found for id '.$questionnaireid);
         }
 
         $question = new Question();
         $question->setQuestionnaireid($questionnaire);
-        $form = $this->createForm(QuestionType::class, $question, [
-            'questionnaire_id' => $questionnaire_id, // On passe l'ID du questionnaire en option
-        ]);
+        #On recupere la derniere question du questionnaire et on met l'indince de notre nouvelle question à l'ancien +1
+        $max_questionnaire_order = $questionnaire->getMaxQuestionOrder();
+        if($max_questionnaire_order === null){
+            $question->setQuestionorder(0);
+        }
+        else{
+            $question->setQuestionorder($max_questionnaire_order+1);
+        }
+        $form = $this->createForm(QuestionType::class, $question);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($question);
             $entityManager->flush();
-            return $this->redirectToRoute('show_questionnaire', ['id' => $questionnaire_id]);
 
+            // Ajouter la question au questionnaire
+            $questionnaire->addQuestion($question);
+            $entityManager->persist($questionnaire);
+            $entityManager->flush();
+
+            //return $this->redirectToRoute('app_questionnaire_show', ['questionnaireid' => $questionnaire->getQuestionnaireid()]);
+            return $this->redirectToRoute('app_question_edit', ['questionid' => $question->getQuestionid()]);
             //return $this->redirectToRoute('app_question_index', [], Response::HTTP_SEE_OTHER);
         }
 
