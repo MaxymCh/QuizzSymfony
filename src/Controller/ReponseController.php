@@ -35,7 +35,7 @@ class ReponseController extends AbstractController
           throw $this->createNotFoundException('No question found for id '.$questionid);
         }
         $reponse = new Reponse();
-        $reponse->setQuestionid($question);
+        $reponse->setQuestion($question);
         $form = $this->createForm(ReponseType::class, $reponse);
         $form->handleRequest($request);
 
@@ -72,10 +72,11 @@ class ReponseController extends AbstractController
         $form = $this->createForm(ReponseType::class, $reponse);
         $form->handleRequest($request);
 
+
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_reponse_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_question_show', ['questionid' => $reponse->getQuestion()->getQuestionid()]);
         }
 
         return $this->renderForm('reponse/edit.html.twig', [

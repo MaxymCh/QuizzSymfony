@@ -1,30 +1,24 @@
-<!DOCTYPE html>
-
-<title>Reponse</title>
-
+{% extends 'layouts/base-entite.html.twig' %}
+ 
+{% block title %}Reponse{% endblock %}
+ 
 {% block body %}
-    <h1>Reponse</h1>
-
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Reponseid</th>
-                <td>{{ reponse.reponseid }}</td>
-            </tr>
-            <tr>
-                <th>Reponsetext</th>
-                <td>{{ reponse.reponsetext }}</td>
-            </tr>
-            <tr>
-                <th>Correct</th>
-                <td>{{ reponse.correct ? 'Yes' : 'No' }}</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_reponse_index') }}">back to list</a>
-
-    <a href="{{ path('app_reponse_edit', {'reponseid': reponse.reponseid}) }}">edit</a>
-
-    {{ include('reponse/_delete_form.html.twig') }}
+    <div class="container">
+        <h2 class="text-center mt-5 mb-3">Show Reponse</h2>
+        <div class="card">
+            <div class="card-header">
+                <a class="btn btn-outline-info float-right" href="{{ path('app_reponse_index') }}"> 
+                    View All Reponse
+                </a>
+            </div>
+            <div class="card-body">
+                <b class="text-muted">Reponseid:</b>
+                <p>{{ reponse.reponseid }}</p>
+                <b class="text-muted">Reponsetext:</b>
+                <p>{{ reponse.reponsetext }}</p>
+                <b class="text-muted">Correct:</b>
+                <p>{{ reponse.correct ? 'Yes' : 'No' }}</p>
+            </div>
+        </div>
+    </div>
 {% endblock %}

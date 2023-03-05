@@ -6,7 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Questionnaire;
-
+use JMS\Serializer\Annotation as JMS;
 /**
  * Question
  *
@@ -56,8 +56,8 @@ class Question
     private $questionnaireid;
 
 
-
-	/**
+	
+ 	/**
 	 * 
 	 * @return int
 	 */
@@ -133,7 +133,7 @@ class Question
 	 * 
 	 * @return \App\Entity\Questionnaire
 	 */
-	public function getQuestionnaireid() {
+	public function getQuestionnaire() {
 		return $this->questionnaireid;
 	}
 	
@@ -142,7 +142,7 @@ class Question
 	 * @param \App\Entity\Questionnaire|null $questionnaireid 
 	 * @return self
 	 */
-	public function setQuestionnaireid($questionnaireid): self {
+	public function setQuestionnaire($questionnaireid): self {
 		$this->questionnaireid = $questionnaireid;
 		return $this;
 	}
@@ -170,11 +170,25 @@ class Question
         return $this->reponses;
     }
 
+
+	public function getReponseString()
+	{
+		$reponses = $this->reponses;
+		$result = [];
+		foreach ($reponses as $reponse) {
+			$result[$reponse->getReponsetext()] = $reponse->getReponsetext();
+		}
+		return $result;
+	}
+
+
+
+
     public function addReponse(Reponse $reponse): self
     {
         if (!$this->reponses->contains($reponse)) {
             $this->reponses[] = $reponse;
-            $reponse->setQuestionid($this);
+            $reponse->setQuestion($this);
         }
 
         return $this;
@@ -184,8 +198,8 @@ class Question
     {
         if ($this->reponses->removeElement($reponse)) {
             // set the owning side to null (unless already changed)
-            if ($reponse->getQuestionid() === $this) {
-                $reponse->setQuestionid(null);
+            if ($reponse->getQuestion() === $this) {
+                $reponse->setQuestion(null);
             }
         }
 

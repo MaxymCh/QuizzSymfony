@@ -7,15 +7,18 @@
         <div class="card">
             <div class="card-header">
                 <a class="btn btn-outline-info float-right" href="{{ path('app_questionnaire_index') }}"> 
-                    View All Questionnaires
+                    Voir tous les Questionnaires
                 </a>
             </div>
             <div class="card-body">
-                {% include 'questionnaire/_form.html.twig' with {'button_label': 'Update Questionnaire', 'button_color': 'btn-outline-success'}  %}
+                {% include 'questionnaire/_form.html.twig' with {'button_label': 'Sauvegarder le Questionnaire', 'button_color': 'btn-outline-success'}  %}
+            </div>
+            <div class="card-body">
+                {% include 'question/index.html.twig' with {'button_label': 'Voir Question', 'button_color': 'btn-outline-success'}  %}
             </div>
             <div class="card-body">
                 <a class="btn btn-outline-primary" href="{{ path('app_question_new', {'questionnaireid': questionnaire.questionnaireid}) }}"> 
-                    Add Question 
+                    Ajouter une Question 
                 </a>
             </div>
             <div class="card-body">

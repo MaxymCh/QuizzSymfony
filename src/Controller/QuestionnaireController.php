@@ -2,8 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Question;
 use App\Entity\Questionnaire;
+use App\Entity\RepondreQuestion;
 use App\Form\QuestionnaireType;
+
+use App\Form\RepondreQuestionType;
+
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -48,6 +53,8 @@ class QuestionnaireController extends AbstractController
     #[Route('/{questionnaireid}', name: 'app_questionnaire_show', methods: ['GET'])]
     public function show(Questionnaire $questionnaire): Response
     {
+        
+
         return $this->render('questionnaire/show.html.twig', [
             'questionnaire' => $questionnaire,
         ]);
@@ -65,9 +72,11 @@ class QuestionnaireController extends AbstractController
             return $this->redirectToRoute('app_questionnaire_index', [], Response::HTTP_SEE_OTHER);
         }
 
+        $questions = $questionnaire->getQuestions();
         return $this->renderForm('questionnaire/edit.html.twig', [
             'questionnaire' => $questionnaire,
             'form' => $form,
+            'questions' => $questions,
         ]);
     }
 
@@ -81,4 +90,48 @@ class QuestionnaireController extends AbstractController
 
         return $this->redirectToRoute('app_questionnaire_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    #[Route('/{questionnaireid}/repondre/{indiceQuestion}', name: 'app_questionnaire_repondre', methods: ['GET', 'POST'])]
+    public function repondre(Questionnaire $questionnaire, Request $request, int $indiceQuestion): Response
+    {
+
+        // Récupération des questions du questionnaire
+        $questions = $questionnaire->getQuestions();
+        var_dump($questions);
+        // Si l'indice de la question est supérieur ou égal au nombre de questions,
+        // alors on a répondu à toutes les questions, on peut calculer le score
+        if ($indiceQuestion >= count($questions)) {
+            // TODO : Calcul du score
+            
+            return $this->redirectToRoute('app_questionnaire_index');
+        }
+        
+        // Récupération de la question en cours
+        $question = $questions[$indiceQuestion];
+
+        
+        // Création du formulaire pour répondre à la question
+        $answer = new RepondreQuestion();
+        $answer->setQuestion($question);
+        $form = $this->createForm(RepondreQuestionType::class, $answer, ['answer' => $question]);
+        $form->handleRequest($request);
+        
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Sauvegarde de la réponse à la question
+            // Redirection vers la question suivante
+            return $this->redirectToRoute('app_questionnaire_repondre', [
+                'questionnaireid' => $questionnaire->getQuestionnaireid(),
+                'indiceQuestion' => $indiceQuestion+1,
+            ]);
+        }
+        
+        return $this->render('questionnaire/repondre.html.twig', [
+            'questionnaire' => $questionnaire,
+            'question' => $question,
+            'questions' => $questions,
+            'questionIndex' => $indiceQuestion,
+            'form' => $form->createView(),
+        ]);
+    }
+
 }

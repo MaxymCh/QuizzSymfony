@@ -105,7 +105,7 @@ class Reponse
 	 * 
 	 * @return \App\Entity\Question
 	 */
-	public function getQuestionid() {
+	public function getQuestion() {
 		return $this->questionid;
 	}
 	
@@ -114,7 +114,7 @@ class Reponse
 	 * @param \App\Entity\Question|null $questionid 
 	 * @return self
 	 */
-	public function setQuestionid($questionid): self {
+	public function setQuestion($questionid): self {
 		$this->questionid = $questionid;
 		return $this;
 	}

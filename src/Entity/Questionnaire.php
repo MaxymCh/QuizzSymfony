@@ -121,7 +121,7 @@ class Questionnaire
     {
         if (!$this->questions->contains($question)) {
             $this->questions[] = $question;
-            $question->setQuestionnaireid($this);
+            $question->setQuestionnaire($this);
         }
 
         return $this;
@@ -131,8 +131,8 @@ class Questionnaire
     {
         if ($this->questions->removeElement($question)) {
             // set the owning side to null (unless already changed)
-            if ($question->getQuestionnaireid() === $this) {
-                $question->setQuestionnaireid(null);
+            if ($question->getQuestionnaire() === $this) {
+                $question->setQuestionnaire(null);
             }
         }
 

@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Question;
 use App\Entity\Questionnaire;
+use App\Entity\RepondreQuestion;
 use App\Form\QuestionType;
+use App\Form\RepondreQuestionType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -36,7 +38,7 @@ class QuestionController extends AbstractController
         }
 
         $question = new Question();
-        $question->setQuestionnaireid($questionnaire);
+        $question->setQuestionnaire($questionnaire);
         #On recupere la derniere question du questionnaire et on met l'indince de notre nouvelle question à l'ancien +1
         $max_questionnaire_order = $questionnaire->getMaxQuestionOrder();
         if($max_questionnaire_order === null){
@@ -71,6 +73,7 @@ class QuestionController extends AbstractController
     #[Route('/{questionid}', name: 'app_question_show', methods: ['GET'])]
     public function show(Question $question): Response
     {
+        
         return $this->render('question/show.html.twig', [
             'question' => $question,
         ]);
@@ -85,12 +88,41 @@ class QuestionController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_question_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_questionnaire_show', ['questionnaireid' => $question->getQuestionnaire()->getQuestionnaireid()]);
+
+            #return $this->redirectToRoute('app_question_index', [], Response::HTTP_SEE_OTHER);
         }
 
+        $reponses = $question->getReponses();
         return $this->renderForm('question/edit.html.twig', [
             'question' => $question,
             'form' => $form,
+            'reponses' => $reponses,
+        ]);
+    }
+
+
+    #[Route('/{questionid}/repondre', name: 'app_question_repondre', methods: ['GET', 'POST'])]
+    public function repondre(Request $request, Question $question, EntityManagerInterface $entityManager): Response
+    {
+        $answer = new RepondreQuestion();
+        $answer->setQuestion($question);
+        $form = $this->createForm(RepondreQuestionType::class, $answer, ['answer' => $question]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_questionnaire_show', ['questionnaireid' => $question->getQuestionnaire()->getQuestionnaireid()]);
+
+            #return $this->redirectToRoute('app_question_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        $reponses = $question->getReponses();
+        return $this->renderForm('question/repondre.html.twig', [
+            'question' => $question,
+            'form' => $form,
+            'reponses' => $reponses,
         ]);
     }
 

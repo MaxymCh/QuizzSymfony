@@ -1,11 +1,19 @@
-<!DOCTYPE html>
-
-<title>New Reponse</title>
-
+{% extends 'layouts/base-entite.html.twig' %}
+ 
+{% block title %}New Reponse{% endblock %}
+ 
 {% block body %}
-    <h1>Create new Reponse</h1>
-
-    {{ include('reponse/_form.html.twig') }}
-
-    <a href="{{ path('app_question_edit',{'questionid': reponse.questionid}) }}">back to list</a>
+    <div class="container">
+        <h2 class="text-center mt-5 mb-3">Create Reponse</h2>
+        <div class="card">
+            <div class="card-header">
+                <a class="btn btn-outline-info float-right" href="{{ path('app_reponse_index') }}"> 
+                    View All Projects
+                </a>
+            </div>
+            <div class="card-body">
+                 {{ include('reponse/_form.html.twig') }}
+            </div>
+        </div>
+    </div>
 {% endblock %}
