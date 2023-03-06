@@ -97,7 +97,6 @@ class QuestionnaireController extends AbstractController
 
         // Récupération des questions du questionnaire
         $questions = $questionnaire->getQuestions();
-        var_dump($questions);
         // Si l'indice de la question est supérieur ou égal au nombre de questions,
         // alors on a répondu à toutes les questions, on peut calculer le score
         if ($indiceQuestion >= count($questions)) {
@@ -106,25 +105,27 @@ class QuestionnaireController extends AbstractController
             return $this->redirectToRoute('app_questionnaire_index');
         }
         
-        // Récupération de la question en cours
+        // Récupération de la question correspondant à l'indice donné
         $question = $questions[$indiceQuestion];
 
-        
         // Création du formulaire pour répondre à la question
         $answer = new RepondreQuestion();
         $answer->setQuestion($question);
         $form = $this->createForm(RepondreQuestionType::class, $answer, ['answer' => $question]);
         $form->handleRequest($request);
-        
+        \Doctrine\Common\Util\Debug::dump("Testttouu");
         if ($form->isSubmitted() && $form->isValid()) {
+            \Doctrine\Common\Util\Debug::dump($indiceQuestion);
+            \Doctrine\Common\Util\Debug::dump("Testtt");
             // Sauvegarde de la réponse à la question
             // Redirection vers la question suivante
+            $indiceQuestion += 1;
             return $this->redirectToRoute('app_questionnaire_repondre', [
-                'questionnaireid' => $questionnaire->getQuestionnaireid(),
-                'indiceQuestion' => $indiceQuestion+1,
+            'questionnaireid' => $questionnaire->getQuestionnaireid(),
+            'indiceQuestion' => $indiceQuestion,
             ]);
         }
-        
+
         return $this->render('questionnaire/repondre.html.twig', [
             'questionnaire' => $questionnaire,
             'question' => $question,
@@ -133,5 +134,6 @@ class QuestionnaireController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
 
 }

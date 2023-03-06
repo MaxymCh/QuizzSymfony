@@ -6,6 +6,7 @@ namespace App\Form;
 use App\Entity\Question;
 use App\Entity\RepondreQuestion;
 use Symfony\Component\Form\AbstractType;
+
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -18,7 +19,6 @@ class RepondreQuestionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $question = $options['answer'];
-        
         if ($question->getQuestionType() === 'radio') {
             $builder->add('answer', ChoiceType::class, [
                 'choices' => $question->getReponseString(),
