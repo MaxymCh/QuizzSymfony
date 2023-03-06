@@ -1,0 +1,3 @@
+# QuizzSymfony
+
+composer update
