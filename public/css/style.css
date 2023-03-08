@@ -4,9 +4,10 @@ html {
 }
 body {
   margin:0;
-  padding:0;
+  align-items: center;
+  padding:10px;
   font-family: sans-serif;
-  background: linear-gradient(45deg, #ece9e9, #54586b);;
+  background: linear-gradient(45deg, #ece9e9, #ebeaf1);
 }
 
 .login-box {
@@ -77,20 +78,27 @@ body {
   flex-direction: row-reverse;
   align-items: center; 
 }
+.center{
+  text-align: center;
+  padding: 10px;
+  padding-bottom: 50px;
+}
 input{
   margin-left: 5px;
   margin-right: 10px;
 }
 label{
+  color: white;
   font-size: 22px;
 }
 button{
-  margin-left: 20px;
+  margin-left: 30px;
+
 }
 .form-group {
   border: 1px solid white;
   border-radius: 5px;
-  padding: 10px;
+  padding: 0px;
 }
 
 .form-group input {
@@ -98,6 +106,8 @@ button{
 }
 .container{
   border: 1px solid white;
+  background-color: #43339d;
   border-radius: 5px;
   padding: 10px;
+  color: white;
 }

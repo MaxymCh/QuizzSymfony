@@ -10,7 +10,7 @@ INSERT INTO QUESTIONNAIRE (questionnaireID, questionnaireName, questionnaireDesc
 INSERT INTO QUESTION (questionID, questionText, questionType, questionnaireID, questionOrder) VALUES 
 (1,"Qui sont les fréres de Luffy ?","checkbox", 1, 0),
 (2,"Le quel est mort à Marine Ford ?","radio",1 ,1),
-(3,"Quel est votre personnage favoris ?","text",1,2),
+(3,"Qui est le personnage principal ?(seulemnt le prénom)","text",1,2),
 (4,"Quel Shichibukai est le rival de Shanks ?","dropdown",1,3);
 
 INSERT INTO REPONSE (reponseID, reponseText, questionID, correct) VALUES
@@ -26,4 +26,5 @@ INSERT INTO REPONSE (reponseID, reponseText, questionID, correct) VALUES
 (10,"Crocodile", 4, false),
 (11,"Dracule Mihawk", 4, true),
 (12,"Marshal D Teach", 4, false),
-(13,"Boa Hancock", 4, false);
+(13,"Boa Hancock", 4, false),
+(14,"Luffy", 3, true);
