@@ -190,7 +190,7 @@ class Question
 		$reponses = $this->reponses;
 		$result = [];
 		foreach ($reponses as $reponse) {
-			$result[$reponse->getReponsetext()] = $reponse->getReponseid();
+			$result[$reponse->getReponsetext()] = $reponse->getReponsetext();
 		}
 		return $result;
 	}

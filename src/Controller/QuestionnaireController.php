@@ -95,7 +95,7 @@ class QuestionnaireController extends AbstractController
     public function repondre(Questionnaire $questionnaire, Request $request, int $indiceQuestion): Response
     {
 
-        
+
 
         $session = $request->getSession();
         // Récupération des questions du questionnaire
@@ -103,8 +103,7 @@ class QuestionnaireController extends AbstractController
 
         if ($indiceQuestion >= count($questions)) {
             // TODO : Calcul du score
-            $mesReponse = $session->get('questionnaire_'.$questionnaire->getQuestionnaireid());
-            return $this->calculerScore($questionnaire, $mesReponse);
+            return $this->calculerScore($questionnaire, $request);
 
         }
 
@@ -121,16 +120,18 @@ class QuestionnaireController extends AbstractController
         $form = $this->createForm(RepondreQuestionType::class, $answer, ['answer' => $question]);
         $form->handleRequest($request);
 
+        \Doctrine\Common\Util\Debug::dump("test");
+        \Doctrine\Common\Util\Debug::dump($session->all());
         if ($form->isSubmitted() && $form->isValid()) {
-            \Doctrine\Common\Util\Debug::dump($answer->getAnswer());
 
-            $ancienne_reponse_questionnaire = $session->get('questionnaire_'.$questionnaire->getQuestionnaireid());
-            if($ancienne_reponse_questionnaire == null){
-                $session->set('questionnaire_'.$questionnaire->getQuestionnaireid(), []);
-            }
+            //$ancienne_reponse_questionnaire = $session->get('questionnaire_'.$questionnaire->getQuestionnaireid());
+            //if($ancienne_reponse_questionnaire == null){
+            //    $session->set('questionnaire_'.$questionnaire->getQuestionnaireid(), []);
+            //}
 
-            $session->get('questionnaire_'.$questionnaire->getQuestionnaireid())['question_'.$question->getQuestionid()] = $answer;
-
+            $listeReponseQuestionnaire = $session->get('questionnaire_'.$questionnaire->getQuestionnaireid(), []);
+            $listeReponseQuestionnaire['question_'.$question->getQuestionid()] = $answer->getAnswer();
+            $session->set('questionnaire_'.$questionnaire->getQuestionnaireid(), $listeReponseQuestionnaire);
             // $session->set('questionnaire_'.$questionnaire->getQuestionnaireid(), $score_questionnaire+1);
 
             \Doctrine\Common\Util\Debug::dump("Score : ");
@@ -138,7 +139,7 @@ class QuestionnaireController extends AbstractController
 
             // Sauvegarde de la réponse à la question
             // Redirection vers la question suivante
-            
+            \Doctrine\Common\Util\Debug::dump($session->all());
             $indiceQuestion += 1;
             return $this->redirectToRoute('app_questionnaire_repondre', [
             'questionnaireid' => $questionnaire->getQuestionnaireid(),
@@ -156,8 +157,11 @@ class QuestionnaireController extends AbstractController
     }
 
 
-    public function calculerScore(Questionnaire $questionnaire, $reponsesUtilisateur): Response
+    public function calculerScore(Questionnaire $questionnaire, Request $request): Response
     {
+    $session = $request->getSession();
+    $reponsesUtilisateur = $session->get('questionnaire_'.$questionnaire->getQuestionnaireid());
+
     $questions = $questionnaire->getQuestions();
     $score = 0;
     \Doctrine\Common\Util\Debug::dump("MEsrr : ");
@@ -168,7 +172,7 @@ class QuestionnaireController extends AbstractController
         $reponseCorrectes = $question->getReponsesCorrecte();
         
         // Si la question n'a pas de réponse correcte, on passe à la suivante
-        if (empty($reponseCorrecte)) {
+        if (empty($reponseCorrectes)) {
             continue;
         }
         //foreach ($reponseCorrectes as $reponseCorrecte)
@@ -176,11 +180,10 @@ class QuestionnaireController extends AbstractController
         if ($question->getQuestionType() === 'checkbox' ) {
             continue;
         }
-        
         else{
             \Doctrine\Common\Util\Debug::dump(strtolower($reponsesUtilisateur['question_'.$question->getQuestionid()]));
-            \Doctrine\Common\Util\Debug::dump(strtolower($reponseCorrectes[0]));
-            if (strtolower($reponsesUtilisateur['question_'.$question->getQuestionid()]) === strtolower($reponseCorrectes[0])) {
+            \Doctrine\Common\Util\Debug::dump(strtolower($reponseCorrectes[0]->getReponsetext()));
+            if (strtolower($reponsesUtilisateur['question_'.$question->getQuestionid()]) === strtolower($reponseCorrectes[0]->getReponsetext())) {
                 $score += 1;
             }
             

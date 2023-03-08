@@ -7,8 +7,10 @@ use App\Entity\Question;
 use App\Entity\RepondreQuestion;
 use Symfony\Component\Form\AbstractType;
 
+
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -40,6 +42,10 @@ class RepondreQuestionType extends AbstractType
         } elseif ($question->getQuestiontype() === 'text') {
             $builder->add('answer', TextType::class);
         }
+        $builder->add('save', SubmitType::class, array(
+            'label' => 'Suivantt',
+            'attr' => array('name' => 'action')
+        ))
         ;
     }
     public function configureOptions(OptionsResolver $resolver)
