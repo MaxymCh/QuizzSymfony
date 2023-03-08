@@ -95,15 +95,22 @@ class QuestionnaireController extends AbstractController
     public function repondre(Questionnaire $questionnaire, Request $request, int $indiceQuestion): Response
     {
 
+        
+
+        $session = $request->getSession();
         // Récupération des questions du questionnaire
         $questions = $questionnaire->getQuestions();
-        // Si l'indice de la question est supérieur ou égal au nombre de questions,
-        // alors on a répondu à toutes les questions, on peut calculer le score
+
         if ($indiceQuestion >= count($questions)) {
             // TODO : Calcul du score
-            
-            return $this->redirectToRoute('app_questionnaire_index');
+            $mesReponse = $session->get('questionnaire_'.$questionnaire->getQuestionnaireid());
+            return $this->calculerScore($questionnaire, $mesReponse);
+
         }
+
+       
+        // Si l'indice de la question est supérieur ou égal au nombre de questions,
+        // alors on a répondu à toutes les questions, on peut calculer le score
         
         // Récupération de la question correspondant à l'indice donné
         $question = $questions[$indiceQuestion];
@@ -113,12 +120,25 @@ class QuestionnaireController extends AbstractController
         $answer->setQuestion($question);
         $form = $this->createForm(RepondreQuestionType::class, $answer, ['answer' => $question]);
         $form->handleRequest($request);
-        \Doctrine\Common\Util\Debug::dump("Testttouu");
+
         if ($form->isSubmitted() && $form->isValid()) {
-            \Doctrine\Common\Util\Debug::dump($indiceQuestion);
-            \Doctrine\Common\Util\Debug::dump("Testtt");
+            \Doctrine\Common\Util\Debug::dump($answer->getAnswer());
+
+            $ancienne_reponse_questionnaire = $session->get('questionnaire_'.$questionnaire->getQuestionnaireid());
+            if($ancienne_reponse_questionnaire == null){
+                $session->set('questionnaire_'.$questionnaire->getQuestionnaireid(), []);
+            }
+
+            $session->get('questionnaire_'.$questionnaire->getQuestionnaireid())['question_'.$question->getQuestionid()] = $answer;
+
+            // $session->set('questionnaire_'.$questionnaire->getQuestionnaireid(), $score_questionnaire+1);
+
+            \Doctrine\Common\Util\Debug::dump("Score : ");
+            \Doctrine\Common\Util\Debug::dump($session->get('questionnaire_'.$questionnaire->getQuestionnaireid()));
+
             // Sauvegarde de la réponse à la question
             // Redirection vers la question suivante
+            
             $indiceQuestion += 1;
             return $this->redirectToRoute('app_questionnaire_repondre', [
             'questionnaireid' => $questionnaire->getQuestionnaireid(),
@@ -134,6 +154,46 @@ class QuestionnaireController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
+
+    public function calculerScore(Questionnaire $questionnaire, $reponsesUtilisateur): Response
+    {
+    $questions = $questionnaire->getQuestions();
+    $score = 0;
+    \Doctrine\Common\Util\Debug::dump("MEsrr : ");
+    \Doctrine\Common\Util\Debug::dump($reponsesUtilisateur);
+    
+    // Comparaison des réponses de l'utilisateur avec les réponses correctes
+    foreach ($questions as $question) {
+        $reponseCorrectes = $question->getReponsesCorrecte();
+        
+        // Si la question n'a pas de réponse correcte, on passe à la suivante
+        if (empty($reponseCorrecte)) {
+            continue;
+        }
+        //foreach ($reponseCorrectes as $reponseCorrecte)
+        \Doctrine\Common\Util\Debug::dump("Marep : ");
+        if ($question->getQuestionType() === 'checkbox' ) {
+            continue;
+        }
+        
+        else{
+            \Doctrine\Common\Util\Debug::dump(strtolower($reponsesUtilisateur['question_'.$question->getQuestionid()]));
+            \Doctrine\Common\Util\Debug::dump(strtolower($reponseCorrectes[0]));
+            if (strtolower($reponsesUtilisateur['question_'.$question->getQuestionid()]) === strtolower($reponseCorrectes[0])) {
+                $score += 1;
+            }
+            
+        } 
+    }
+    
+    
+    return $this->render('questionnaire/resultat.html.twig', [
+        'questionnaire' => $questionnaire,
+        'score' => $score,
+    ]);
+    }
+
 
 
 }

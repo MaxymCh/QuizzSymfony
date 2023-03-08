@@ -1,0 +1,14 @@
+{% extends 'layouts/base-entite.html.twig' %}
+{% block title %}Score du questionnaire{% endblock %}
+
+{% block body %}
+    <h1>Mon score au questionnaire</h1>
+    
+
+<h2>{{ questionnaire.getQuestionnairename() }}</h2>
+
+<h2> Score </h2>
+<h2>{{ score }}</h2>
+        
+        
+{% endblock %}

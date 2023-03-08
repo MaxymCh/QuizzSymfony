@@ -19,25 +19,25 @@ class RepondreQuestionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $question = $options['answer'];
-        if ($question->getQuestionType() === 'radio') {
+        if ($question->getQuestiontype() === 'radio') {
             $builder->add('answer', ChoiceType::class, [
                 'choices' => $question->getReponseString(),
                 'expanded' => true,
                 'multiple' => false,
             ]);
-        } elseif ($question->getQuestionType() === 'checkbox') {
+        } elseif ($question->getQuestiontype() === 'checkbox') {
             $builder->add('answer', ChoiceType::class, [
                 'choices' => $question->getReponseString(),
                 'expanded' => true,
                 'multiple' => true,
             ]);
-        } elseif ($question->getQuestionType() === 'dropdown') {
+        } elseif ($question->getQuestiontype() === 'dropdown') {
             $builder->add('answer', ChoiceType::class, [
                 'choices' => $question->getReponseString(),
                 'expanded' => false,
                 'multiple' => false,
             ]);
-        } elseif ($question->getQuestionType() === 'text') {
+        } elseif ($question->getQuestiontype() === 'text') {
             $builder->add('answer', TextType::class);
         }
         ;
