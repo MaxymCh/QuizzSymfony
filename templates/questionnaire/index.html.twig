@@ -4,11 +4,11 @@
  
 {% block body %}
     <div class="container">
-        <h2 class="text-center mt-5 mb-3">Symfony Project Manager</h2>
+        <h2 class="text-center mt-5 mb-3">Vos Questionnaires disponnibles</h2>
         <div class="card">
             <div class="card-header">
                 <a class="btn btn-outline-primary" href="{{ path('app_questionnaire_new') }}"> 
-                    Create New Questionnaire 
+                    Créer un nouveau questionnaire
                 </a>
             </div>
             <div class="card-body">
@@ -29,16 +29,16 @@
                                 <a
                                     class="btn btn-outline-info"
                                     href="{{ path('app_questionnaire_show', {'questionnaireid': questionnaire.questionnaireid}) }}">
-                                    Show
+                                    Voir
                                 </a>
                                 <a
                                     class="btn btn-outline-success"
                                     href="{{ path('app_questionnaire_edit', {'questionnaireid': questionnaire.questionnaireid}) }}">
-                                    Edit
+                                    Editer
                                 </a>
  
                                 <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ questionnaire.questionnaireid) }}">
-                                <button class="btn btn-outline-danger">Delete</button>
+                                <button class="btn btn-outline-danger">Enlever</button>
                             </form>
                         </td>
                     </tr>
