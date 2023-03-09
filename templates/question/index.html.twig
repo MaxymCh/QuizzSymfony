@@ -27,16 +27,16 @@
                                 <a
                                     class="btn btn-outline-info"
                                     href="{{ path('app_question_show', {'questionid': question.questionid}) }}">
-                                    Show
+                                    Voir
                                 </a>
                                 <a
                                     class="btn btn-outline-success"
                                     href="{{ path('app_question_edit', {'questionid': question.questionid}) }}">
-                                    Edit
+                                    Editer
                                 </a>
  
                                 <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ question.questionid) }}">
-                                <button class="btn btn-outline-danger">Delete</button>
+                                <button class="btn btn-outline-danger">Retirer</button>
                             </form>
                         </td>
                     </tr>

@@ -25,16 +25,16 @@
                                 <a
                                     class="btn btn-outline-info"
                                     href="{{ path('app_reponse_show', {'reponseid': reponse.reponseid}) }}">
-                                    Show
+                                    Voir
                                 </a>
                                 <a
                                     class="btn btn-outline-success"
                                     href="{{ path('app_reponse_edit', {'reponseid': reponse.reponseid}) }}">
-                                    Edit
+                                    Editer
                                 </a>
  
                                 <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ reponse.reponseid) }}">
-                                <button class="btn btn-outline-danger">Delete</button>
+                                <button class="btn btn-outline-danger">Retirer</button>
                             </form>
                         </td>
                     </tr>
