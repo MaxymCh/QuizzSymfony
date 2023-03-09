@@ -7,7 +7,7 @@ body {
   align-items: center;
   padding:10px;
   font-family: sans-serif;
-  background: linear-gradient(45deg, #ece9e9, #ebeaf1);
+  background: #ece9e9;
 }
 
 .login-box {
@@ -80,6 +80,7 @@ body {
 }
 .center{
   text-align: center;
+  margin-top: 2em;
   padding: 10px;
   padding-bottom: 50px;
 }
@@ -109,5 +110,8 @@ button{
   background-color: #43339d;
   border-radius: 15px;
   padding: 10px;
+  color: white;
+}
+.navbar-light .navbar-nav .nav-link, .btn {
   color: white;
 }

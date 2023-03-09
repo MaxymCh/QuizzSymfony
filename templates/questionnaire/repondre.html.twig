@@ -1,14 +1,19 @@
 {% extends 'layouts/base-entite.html.twig' %}
 
 
+
 {% block title %}Répondre au questionnaire{% endblock %}
+
 
 {% block stylesheets %}
     {{ parent() }}
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 {% endblock %}
 
+
 {% block body %}
+{{ include('layouts/navbar.html.twig') }}
+<div class="repondre mt-4">
     <h1 class="center"> {{ questionnaire.questionnairename }}</h1>
     <div class="container">
         <h2 class="text-center mt-5 mb-3">Q°{{ question.getQuestionorder()+1 }} :  {{ question.getQuestiontext() }}</h2>
@@ -33,4 +38,5 @@
 
         {{ form_end(form) }}
     </div>
+</div>
 {% endblock %}
