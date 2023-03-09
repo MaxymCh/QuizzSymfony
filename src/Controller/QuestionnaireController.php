@@ -120,8 +120,6 @@ class QuestionnaireController extends AbstractController
         $form = $this->createForm(RepondreQuestionType::class, $answer, ['answer' => $question]);
         $form->handleRequest($request);
 
-        \Doctrine\Common\Util\Debug::dump("test");
-        \Doctrine\Common\Util\Debug::dump($session->all());
         if ($form->isSubmitted() && $form->isValid()) {
 
             //$ancienne_reponse_questionnaire = $session->get('questionnaire_'.$questionnaire->getQuestionnaireid());
@@ -134,12 +132,9 @@ class QuestionnaireController extends AbstractController
             $session->set('questionnaire_'.$questionnaire->getQuestionnaireid(), $listeReponseQuestionnaire);
             // $session->set('questionnaire_'.$questionnaire->getQuestionnaireid(), $score_questionnaire+1);
 
-            \Doctrine\Common\Util\Debug::dump("Score : ");
-            \Doctrine\Common\Util\Debug::dump($session->get('questionnaire_'.$questionnaire->getQuestionnaireid()));
 
             // Sauvegarde de la réponse à la question
             // Redirection vers la question suivante
-            \Doctrine\Common\Util\Debug::dump($session->all());
             $indiceQuestion += 1;
             return $this->redirectToRoute('app_questionnaire_repondre', [
             'questionnaireid' => $questionnaire->getQuestionnaireid(),
@@ -164,8 +159,6 @@ class QuestionnaireController extends AbstractController
 
     $questions = $questionnaire->getQuestions();
     $score = 0;
-    \Doctrine\Common\Util\Debug::dump("MEsrr : ");
-    \Doctrine\Common\Util\Debug::dump($reponsesUtilisateur);
     
     // Comparaison des réponses de l'utilisateur avec les réponses correctes
     foreach ($questions as $question) {
@@ -176,14 +169,10 @@ class QuestionnaireController extends AbstractController
             continue;
         }
         //foreach ($reponseCorrectes as $reponseCorrecte)
-        \Doctrine\Common\Util\Debug::dump("Marep : ");
         if ($question->getQuestionType() === 'checkbox' ) {
             $nb_bonne_reponses = 0;
             $nb_mauvaise_reponses = 0;
-            \Doctrine\Common\Util\Debug::dump($reponseCorrectes);
             foreach ($reponsesUtilisateur['question_'.$question->getQuestionid()] as $reponseUtilisateur) {
-                \Doctrine\Common\Util\Debug::dump("Rep uti : ");
-                \Doctrine\Common\Util\Debug::dump($reponseUtilisateur);
                 if(in_array($reponseUtilisateur, $reponseCorrectes)){
                     $nb_bonne_reponses += 1;
                 }
@@ -203,8 +192,6 @@ class QuestionnaireController extends AbstractController
 
         }
         else{
-            \Doctrine\Common\Util\Debug::dump(strtolower($reponsesUtilisateur['question_'.$question->getQuestionid()]));
-            \Doctrine\Common\Util\Debug::dump(strtolower($reponseCorrectes[0]));
             if (strtolower($reponsesUtilisateur['question_'.$question->getQuestionid()]) === strtolower($reponseCorrectes[0])) {
                 $score += 1;
             }
