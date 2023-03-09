@@ -171,6 +171,31 @@ class Question
     }
 
 
+	 /**
+     * @return array
+     */
+    public function getReponsesCorrecte(): array
+    {
+		$reponsesCorrecte = [];
+		foreach ($this->reponses as $reponse) {
+            if($reponse->getCorrect()){
+				array_push($reponsesCorrecte, $reponse);
+			}
+        }
+        return $reponsesCorrecte;
+    }
+
+	public function getReponsesCorrecteString(): array
+    {
+		$reponsesCorrecte = [];
+		foreach ($this->reponses as $reponse) {
+            if($reponse->getCorrect()){
+				array_push($reponsesCorrecte, $reponse->getReponsetext());
+			}
+        }
+        return $reponsesCorrecte;
+    }
+
 	public function getReponseString()
 	{
 		$reponses = $this->reponses;
