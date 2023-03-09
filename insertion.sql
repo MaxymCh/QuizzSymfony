@@ -9,7 +9,7 @@ INSERT INTO QUESTIONNAIRE (questionnaireID, questionnaireName, questionnaireDesc
 
 INSERT INTO QUESTION (questionID, questionText, questionType, questionnaireID, questionOrder) VALUES 
 (1,"Qui sont les fréres de Luffy ?","checkbox", 1, 0),
-(2,"Le quel est mort à Marine Ford ?","radio",1 ,1),
+(2,"Lequel est mort à Marine Ford ?","radio",1 ,1),
 (3,"Qui est le personnage principal ?(seulemnt le prénom)","text",1,2),
 (4,"Quel Shichibukai est le rival de Shanks ?","dropdown",1,3);
 
