@@ -203,6 +203,10 @@ class QuestionnaireController extends AbstractController
     return $this->render('questionnaire/resultat.html.twig', [
         'questionnaire' => $questionnaire,
         'score' => $score,
+        'nb_total_q' => count($questions),
+        'questions' => $questions,
+        'rep_user' => $reponsesUtilisateur
+
     ]);
     }
 
