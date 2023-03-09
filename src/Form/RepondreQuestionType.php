@@ -42,10 +42,10 @@ class RepondreQuestionType extends AbstractType
         } elseif ($question->getQuestiontype() === 'text') {
             $builder->add('answer', TextType::class);
         }
-        $builder->add('save', SubmitType::class, array(
+        /*$builder->add('save', SubmitType::class, array(
             'label' => 'Suivantt',
             'attr' => array('name' => 'action')
-        ))
+        ))*/
         ;
     }
     public function configureOptions(OptionsResolver $resolver)

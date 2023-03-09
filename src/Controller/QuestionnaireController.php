@@ -169,7 +169,7 @@ class QuestionnaireController extends AbstractController
     
     // Comparaison des réponses de l'utilisateur avec les réponses correctes
     foreach ($questions as $question) {
-        $reponseCorrectes = $question->getReponsesCorrecte();
+        $reponseCorrectes = $question->getReponsesCorrecteString();
         
         // Si la question n'a pas de réponse correcte, on passe à la suivante
         if (empty($reponseCorrectes)) {
@@ -178,12 +178,34 @@ class QuestionnaireController extends AbstractController
         //foreach ($reponseCorrectes as $reponseCorrecte)
         \Doctrine\Common\Util\Debug::dump("Marep : ");
         if ($question->getQuestionType() === 'checkbox' ) {
-            continue;
+            $nb_bonne_reponses = 0;
+            $nb_mauvaise_reponses = 0;
+            \Doctrine\Common\Util\Debug::dump($reponseCorrectes);
+            foreach ($reponsesUtilisateur['question_'.$question->getQuestionid()] as $reponseUtilisateur) {
+                \Doctrine\Common\Util\Debug::dump("Rep uti : ");
+                \Doctrine\Common\Util\Debug::dump($reponseUtilisateur);
+                if(in_array($reponseUtilisateur, $reponseCorrectes)){
+                    $nb_bonne_reponses += 1;
+                }
+                else{
+                    $nb_mauvaise_reponses +=1;
+                }
+            }
+
+            if($nb_mauvaise_reponses == 0){
+                if($nb_bonne_reponses == count($reponseCorrectes)){
+                    $score += 1; 
+                }
+                else{
+                    $score += $nb_bonne_reponses/count($reponseCorrectes); 
+                }
+            }
+
         }
         else{
             \Doctrine\Common\Util\Debug::dump(strtolower($reponsesUtilisateur['question_'.$question->getQuestionid()]));
-            \Doctrine\Common\Util\Debug::dump(strtolower($reponseCorrectes[0]->getReponsetext()));
-            if (strtolower($reponsesUtilisateur['question_'.$question->getQuestionid()]) === strtolower($reponseCorrectes[0]->getReponsetext())) {
+            \Doctrine\Common\Util\Debug::dump(strtolower($reponseCorrectes[0]));
+            if (strtolower($reponsesUtilisateur['question_'.$question->getQuestionid()]) === strtolower($reponseCorrectes[0])) {
                 $score += 1;
             }
             
