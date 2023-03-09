@@ -1,3 +1,7 @@
 # QuizzSymfony
 
-composer update
+mysql -u jory -p -h servinfo-mariadb
+
+
+css card (checkbox)
+
