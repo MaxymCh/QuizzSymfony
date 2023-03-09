@@ -10,69 +10,6 @@ body {
   background: #ece9e9;
 }
 
-.login-box {
-  position: absolute;
-  top: 45%;
-  left: 50%;
-  width: 400px;
-  padding: 40px;
-  transform: translate(-50%, -50%);
-  background: rgba(0,0,0,.5);
-  box-sizing: border-box;
-  box-shadow: 0 15px 25px rgba(0,0,0,.6);
-  border-radius: 10px;
-}
-
-.login-box h2 {
-  margin: 0 0 30px;
-  padding: 0;
-  color: #fff;
-  text-align: center;
-}
-
-.login-box .user-box {
-  position: relative;
-}
-
-.login-box .user-box input {
-  width: 100%;
-  padding: 10px 0;
-  font-size: 16px;
-  color: #fff;
-  margin-bottom: 20px;
-  border: none;
-  border-bottom: 1px solid #fff;
-  outline: none;
-  background: transparent;
-}
-.login-box .user-box label {
-  position: absolute;
-  top:0;
-  left: 0;
-  padding: 10px 0;
-  font-size: 16px;
-  color: #fff;
-  pointer-events: none;
-  transition: .5s;
-}
-
-#p_submit{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-}
-#validation {
-  margin-top: 30px;
-  padding: 10px;
-  color: #03e9f4;
-  font-size: 16px;
-  text-decoration: none;
-  transition: .5s;
-  letter-spacing: 4px;
-  background: transparent;
-  border: transparent
-}
 .before {
   display: flex;
   flex-direction: row-reverse;
@@ -114,4 +51,10 @@ button{
 }
 .navbar-light .navbar-nav .nav-link,.nav-item .btn {
   color: white;
+}
+img{
+  margin-left: 15px;
+}
+h3{
+  text-align: center;
 }
