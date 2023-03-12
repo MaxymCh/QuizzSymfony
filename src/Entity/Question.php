@@ -163,7 +163,7 @@ class Question
     }
 
     /**
-     * @return Collection|Question[]
+     * @return Reponse[]
      */
     public function getReponses(): Collection
     {

@@ -6,14 +6,18 @@ use App\Entity\Question;
 use App\Entity\Questionnaire;
 use App\Entity\RepondreQuestion;
 use App\Form\QuestionnaireType;
+use App\Entity\Reponse;
+
 
 use App\Form\RepondreQuestionType;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\File\File;
 
 #[Route('/questionnaire')]
 class QuestionnaireController extends AbstractController
@@ -29,6 +33,136 @@ class QuestionnaireController extends AbstractController
             'questionnaires' => $questionnaires,
         ]);
     }
+
+
+
+    #[Route('/export', name: 'app_questionnaire_export', methods: ['GET'])]
+    public function export(EntityManagerInterface $entityManager): Response
+    {
+
+        $questionnaires = $entityManager
+            ->getRepository(Questionnaire::class)
+            ->findAll();
+
+
+        foreach ($questionnaires as $questionnaire) {
+            $questions = [];
+            foreach ($questionnaire->getQuestions() as $question) {
+                $reponses = [];
+                foreach ($question->getReponses() as $reponse) {
+                    $reponse = [
+                        //'id' => $reponse->getReponseid(),
+                        'texte' => $reponse->getReponsetext(),
+                        'correcte' => $reponse->getCorrect(),
+                    ];
+                    array_push($reponses, $reponse);
+                }
+                $question= [
+                    //'id' => $question->getQuestionid(),
+                    'texte' => $question->getQuestiontext(),
+                    'order' => $question->getQuestionorder(),
+                    'type' => $question->getQuestiontype(),
+                    'reponses'=> $reponses,
+                ];
+                array_push($questions, $question);
+            }
+            $data['questionnaire_'.$questionnaire->getQuestionnaireid()] = [
+                //'id' => $questionnaire->getQuestionnaireid(),
+                'name' => $questionnaire->getQuestionnairename(),
+                'description' => $questionnaire->getQuestionnairedescription(),
+                'questions' => $questions,
+            ];
+    
+            
+            
+        }
+        
+        
+
+        $json = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        // Écriture du JSON dans un fichier
+        $filename = 'json/questionnaire_donnee.json';
+        file_put_contents($filename, $json);
+
+        // Création d'une réponse JSON pour indiquer que l'exportation s'est bien passée
+        $response = new JsonResponse([
+            'message' => 'Les résultats ont été exportés avec succès.'
+        ]);
+
+        return $response;
+    }
+
+    #[Route('/import', name: 'app_questionnaire_import', methods: ['GET'])]
+    public function import(Request $request, EntityManagerInterface $entityManager): JsonResponse
+    {
+
+        $filePath = new File($this->getParameter('kernel.project_dir') . '/public/json/file.json');
+        $realPath = $filePath->getRealPath();
+
+
+        // Récupération du fichier JSON depuis la requête
+        //$file = $request->files->get('file.json');
+        //if (!$file) {
+        //    return new JsonResponse(['error' => 'Fichier manquant'], Response::HTTP_BAD_REQUEST);
+        //}
+        //$filename = $file->getPathname();
+
+        // Lecture du fichier JSON
+        //$json = file_get_contents($filename);
+        $jsonData = file_get_contents($realPath);
+        if (!$jsonData) {
+            return new JsonResponse(['error' => 'Impossible de lire le fichier'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        // Décodage des données JSON
+        //$data = json_decode($json, true);
+        $data = json_decode($jsonData, true);
+
+        if (!$data) {
+            return new JsonResponse(['error' => 'Le fichier JSON est invalide'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $questionnaireRepository = $entityManager->getRepository(Questionnaire::class);
+
+        foreach ($data as $questionnaireData) {
+            $questionnaire = $questionnaireRepository->findOneBy(['questionnairename' => $questionnaireData['name']]);
+            if (!$questionnaire) {
+                // Insertion d'un nouveau questionnaire
+                $questionnaire = new Questionnaire();
+                $questionnaire->setQuestionnairename($questionnaireData['name']);
+                $questionnaire->setQuestionnairedescription($questionnaireData['description']);
+                $entityManager->persist($questionnaire);
+            }
+
+            foreach ($questionnaireData['questions'] as $questionData) {
+                // Insertion d'une nouvelle question
+                $question = new Question();
+                $question->setQuestiontext($questionData['texte']);
+                $question->setQuestionorder($questionData['order']);
+                $question->setQuestiontype($questionData['type']);
+
+                $questionnaire->addQuestion($question);
+                $entityManager->persist($question);
+
+                foreach ($questionData['reponses'] as $reponseData) {
+                    // Insertion d'une nouvelle réponse
+                    $reponse = new Reponse();
+                    $reponse->setReponsetext($reponseData['texte']);
+                    $reponse->setCorrect($reponseData['correcte']);
+
+                    $question->addReponse($reponse);
+                    $entityManager->persist($reponse);
+                }
+            }
+            
+    }
+
+    // Exécution des requêtes SQL pour insérer les nouvelles données
+    $entityManager->flush();
+
+    return new JsonResponse(['message' => 'Les données ont été importées avec succès.']);
+    }
+
 
     #[Route('/new', name: 'app_questionnaire_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
@@ -50,6 +184,7 @@ class QuestionnaireController extends AbstractController
         ]);
     }
 
+    
     #[Route('/{questionnaireid}', name: 'app_questionnaire_show', methods: ['GET'])]
     public function show(Questionnaire $questionnaire): Response
     {
@@ -208,6 +343,8 @@ class QuestionnaireController extends AbstractController
 
     ]);
     }
+
+
 
 
 
